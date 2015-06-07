@@ -1,0 +1,30 @@
+{
+  "name": "github-label",
+  "version": "1.0.0",
+  "description": "CLI for creating GitHub labels",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/codenameyau/github-label.git"
+  },
+  "keywords": [
+    "github",
+    "labels",
+    "label",
+    "issues"
+  ],
+  "author": "Jorge Yau <jyau01@citymail.cuny.edu>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/codenameyau/github-label/issues"
+  },
+  "homepage": "https://github.com/codenameyau/github-label",
+  "dependencies": {
+    "commander": "^2.8.1",
+    "octonode": "^0.6.17",
+    "require-dir": "^0.3.0"
+  }
+}
