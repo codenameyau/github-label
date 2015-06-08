@@ -10,6 +10,7 @@ var program = require('commander');
 var prompt = require('prompt');
 var github = require('octonode');
 var fs = require('fs');
+var format = require('util').format;
 var pjson = require('../package.json');
 var labelPresets = requireDir('./presets');
 
@@ -82,7 +83,12 @@ GithubCLI.prototype.setupLabels = function() {
 
   // Extend labels with preset.
   else {
-    this.extendLabels(labelPresets[this.program.preset]);
+    var preset = this.program.preset;
+    var labels = labelPresets[preset];
+    if (!labels) {
+      this.exit(format('preset "%s" doesn\'t exist.', preset));
+    }
+    this.extendLabels(labels);
     this.setupGithubClient();
   }
 };
