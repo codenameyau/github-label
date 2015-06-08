@@ -19,25 +19,14 @@ export GITHUB_LABEL_TOKEN='REPLACE THIS WITH YOUR TOKEN'
 ```
 
 ## Usage Examples
-Here a few examples. I recommend using access tokens. Please see below
-for the list of label presets available.
-
-#### With username and password:
-```
-github-label -u codenameyau -r 'codenameyau/github-label'
-```
-
-#### With access token:
-```
-github-label -r 'codenameyau/github-label'
-```
+Here a few examples. Please see below for the list of available label presets.
 
 #### Specify label preset:
 ```
-github-label -r 'codenameyau/github-label' -p angular
+github-label 'codenameyau/github-label' -p priority
 ```
 
 #### Specify your own JSON preset:
 ```
-github-label -r 'codenameyau/github-label' -p 'path-to/preset.json'
+github-label 'codenameyau/github-label' -j 'path-to/preset.json'
 ```
