@@ -10,7 +10,6 @@ function GithubClient() {
   this.ACCESS_TOKEN = process.env.GITHUB_LABEL_TOKEN;
   this.repository = '';
   this.client = null;
-  this.ghrepo = null;
 }
 
 
@@ -19,7 +18,6 @@ function GithubClient() {
 *********************************************************************/
 GithubClient.prototype.setRepository = function(repository) {
   this.repository = repository;
-  this.ghrepo = this.client.repo(this.repository);
 };
 
 GithubClient.prototype.getRepository = function() {
@@ -28,7 +26,6 @@ GithubClient.prototype.getRepository = function() {
 
 GithubClient.prototype.setupTokenClient = function() {
   this.client = github.client(this.ACCESS_TOKEN);
-  this.setupGithubRepo();
 };
 
 GithubClient.prototype.setupAuthClient = function(username, password) {
@@ -36,17 +33,28 @@ GithubClient.prototype.setupAuthClient = function(username, password) {
     username: username,
     password: password
   });
-  this.setupGithubRepo();
 };
 
 GithubClient.prototype.getLabels = function(callback) {
-  this.ghrepo.labels(function(blank, data, header) {
+  var ghrepo = this.client.repo(this.repository);
+  ghrepo.labels(function(blank, data, header) {
     callback(data, header);
   });
 };
 
 GithubClient.prototype.postLabels = function(labels) {
-  console.log('TODO: Send post request');
+  var ghrepo = this.client.repo(this.repository);
+  for (var i=0; i<labels.length; i++) {
+    var label = labels[i];
+    ghrepo.label(label, function(res) {
+      console.log(res);
+      if (res.statusCode === 201) {
+        console.log('[+] Created label: ' + label.name);
+      } else {
+        console.log('[-] Could not create label: ' + label.name);
+      }
+    });
+  }
 };
 
 

@@ -34,7 +34,6 @@ var createGithubLabels = function(repository, labels) {
   client.setRepository(repository);
 
   // TODO: Clean up labels for API here.
-  // TODO: code
 
   // Authenticate client with access token.
   if (client.ACCESS_TOKEN) {
@@ -85,6 +84,8 @@ else {
   var labels = presets[labelPreset];
   if (!labels) {
     logging.exit(format('preset "%s" doesn\'t exist.', labelPreset));
+  } else if (!labels.length) {
+    logging.exit('labels are empty.');
   } else {
     createGithubLabels(repository, labels);
   }
