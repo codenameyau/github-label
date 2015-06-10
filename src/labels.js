@@ -30,6 +30,7 @@ function GithubCLI() {
   // Initialize values.
   this.repository = '';
   this.client = null;
+  this.ghrepo = null;
   this.labels = [];
 
   // Setup octonode client.
@@ -94,17 +95,17 @@ GithubCLI.prototype.setupLabels = function() {
 };
 
 GithubCLI.prototype.setupGithubClient = function() {
-  console.log(this.labels);
   if (this.ACCESS_TOKEN) {
     this.setupTokenClient();
-    this.submitLabelRequest();
+    this.submitLabel();
   } else {
-    this.getAuthCredentials(this.submitLabelRequest.bind(this));
+    this.getAuthCredentials(this.submitLabel.bind(this));
   }
 };
 
 GithubCLI.prototype.setupTokenClient = function() {
   this.client = github.client(this.ACCESS_TOKEN);
+  this.setupGithubRepo();
 };
 
 GithubCLI.prototype.setupAuthClient = function(username, password) {
@@ -112,6 +113,11 @@ GithubCLI.prototype.setupAuthClient = function(username, password) {
     username: username,
     password: password
   });
+  this.setupGithubRepo();
+};
+
+GithubCLI.prototype.setupGithubRepo = function() {
+  this.ghrepo = this.client.repo(this.repository);
 };
 
 GithubCLI.prototype.getAuthCredentials = function(callback) {
@@ -131,8 +137,10 @@ GithubCLI.prototype.getAuthCredentials = function(callback) {
   });
 };
 
-GithubCLI.prototype.submitLabelRequest = function() {
-  console.log(this.repository);
+GithubCLI.prototype.getLabels = function(callback) {
+  this.ghrepo.labels(function(blank, data, header) {
+    callback(data, header);
+  });
 };
 
 /********************************************************************
