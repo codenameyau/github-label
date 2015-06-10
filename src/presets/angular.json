@@ -1,6 +1,10 @@
 [
   {
-    "label": "angular",
-    "color": "#ffffff"
+    "name": "angular",
+    "color": "ffffff"
+  },
+  {
+    "name": "crime against humanity",
+    "color": "000000"
   }
 ]
