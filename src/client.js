@@ -1,6 +1,7 @@
 'use strict';
 
 var github = require('octonode');
+var format = require('util').format;
 
 /********************************************************************
 * FUNCTION CONSTRUCTOR
@@ -46,12 +47,9 @@ GithubClient.prototype.postLabels = function(labels) {
   var ghrepo = this.client.repo(this.repository);
   for (var i=0; i<labels.length; i++) {
     var label = labels[i];
-    ghrepo.label(label, function(res) {
-      console.log(res);
-      if (res.statusCode === 201) {
-        console.log('[+] Created label: ' + label.name);
-      } else {
-        console.log('[-] Could not create label: ' + label.name);
+    ghrepo.label(label, function(error, data) {
+      if (!error && data) {
+        console.log('[+] Created label: %s - #%s', data.name, data.color);
       }
     });
   }
