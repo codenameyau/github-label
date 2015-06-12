@@ -1,13 +1,13 @@
 'use strict';
 
 var github = require('octonode');
-var format = require('util').format;
+
 
 /********************************************************************
 * FUNCTION CONSTRUCTOR
 *********************************************************************/
 function GithubClient() {
-  // Only specified if environment variable exists.
+  // Only true if environment variable exists.
   this.ACCESS_TOKEN = process.env.GITHUB_LABEL_TOKEN;
   this.repository = '';
   this.client = null;
@@ -43,16 +43,11 @@ GithubClient.prototype.getLabels = function(callback) {
   });
 };
 
-GithubClient.prototype.postLabels = function(labels) {
+GithubClient.prototype.postLabel = function(label, callback) {
   var ghrepo = this.client.repo(this.repository);
-  for (var i=0; i<labels.length; i++) {
-    var label = labels[i];
-    ghrepo.label(label, function(error, data) {
-      if (!error && data) {
-        console.log('[+] Created label: %s - #%s', data.name, data.color);
-      }
-    });
-  }
+  ghrepo.label(label, function(error, data) {
+    callback(error, data);
+  });
 };
 
 

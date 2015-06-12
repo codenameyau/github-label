@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/codenameyau/github-label",
   "dependencies": {
+    "async": "^1.2.1",
     "commander": "^2.8.1",
     "octonode": "^0.6.17",
     "prompt": "^0.2.14",

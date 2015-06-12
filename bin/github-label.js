@@ -3,12 +3,13 @@
 
 var program = require('commander');
 var prompt = require('prompt');
+var async = require('async');
 var requireDir = require('require-dir');
 var format = require('util').format;
-var logging = require('../src/logging');
-var GithubClient = require('../src/client');
-var utils = require('../src/utils');
 var presets = requireDir('../src/presets');
+var GithubClient = require('../src/client');
+var logging = require('../src/logging');
+var utils = require('../src/utils');
 var pjson = require('../package.json');
 
 
@@ -29,22 +30,32 @@ var promptForCredentials = function(client, callback) {
   });
 };
 
+var postLabels = function(client, labels) {
+  async.each(labels, function(item) {
+    client.postLabel(item, function(error, data) {
+      if (error) {
+        console.log('[-] Could not create label: %s', item.name);
+      } else if (data) {
+        console.log('[+] Created label: %s (#%s)', data.name, data.color);
+      }
+    });
+  });
+};
+
 var createGithubLabels = function(repository, labels) {
   var client = new GithubClient();
   client.setRepository(repository);
 
-  // TODO: Clean up labels for API here.
-
   // Authenticate client with access token.
   if (client.ACCESS_TOKEN) {
     client.setupTokenClient();
-    client.postLabels(labels);
+    postLabels(client, labels);
   }
 
   // Authenticate client with credentials.
   else {
     promptForCredentials(client, function() {
-      client.postLabels(labels);
+      postLabels(client, labels);
     });
   }
 };
