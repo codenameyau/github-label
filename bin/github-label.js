@@ -6,11 +6,11 @@ var prompt = require('prompt');
 var async = require('async');
 var requireDir = require('require-dir');
 var format = require('util').format;
-var presets = requireDir('../src/presets');
 var GithubClient = require('../src/client');
 var logging = require('../src/logging');
 var utils = require('../src/utils');
 var pjson = require('../package.json');
+var presets = requireDir('../src/presets');
 
 
 /********************************************************************
