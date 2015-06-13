@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+/*!
+ * github-label
+ * MIT License (c) 2015
+ * https://github.com/codenameyau/github-label
+ */
 'use strict';
 
 var program = require('commander');
@@ -10,7 +15,7 @@ var GithubClient = require('../src/client');
 var logging = require('../src/logging');
 var utils = require('../src/utils');
 var pjson = require('../package.json');
-var presets = requireDir('../src/presets');
+var presets = requireDir('../presets');
 
 
 /********************************************************************
