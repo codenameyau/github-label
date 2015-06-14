@@ -45,8 +45,15 @@ GithubClient.prototype.getLabels = function(callback) {
 
 GithubClient.prototype.postLabel = function(label, callback) {
   var ghrepo = this.client.repo(this.repository);
-  ghrepo.label(label, function(error, data) {
-    callback(error, data);
+  ghrepo.label(label, function(error, data, header) {
+    callback(error, data, header);
+  });
+};
+
+GithubClient.prototype.removeLabel = function(labelName, callback) {
+  var ghlabel = this.client.label(this.repository, labelName);
+  ghlabel.delete(function(error, data, header) {
+    callback(error, data, header);
   });
 };
 

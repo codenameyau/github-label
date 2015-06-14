@@ -24,7 +24,7 @@ var presets = requireDir('../presets');
 var OUTPUT = {
   created: '[+] Created label: %s',
   skipped: '[-] Skipped label: %s',
-  removed: '[-] Removed label: %s',
+  removed: '[x] Removed label: %s',
 };
 
 var hasInvalidOptions = function(program) {
@@ -78,6 +78,18 @@ var createLabels = function(client, labels) {
   });
 };
 
+var removeLabels = function(client, labels) {
+  async.each(labels, function(item) {
+    client.removeLabel(item.name, function(error) {
+      if (error && error.statusCode === 404) {
+        console.log(OUTPUT.skipped, item.name);
+      } else {
+        console.log(OUTPUT.removed, item.name);
+      }
+    });
+  });
+};
+
 var sendClientRequest = function(repository, labels, callback) {
   var client = new GithubClient();
   client.setRepository(repository);
@@ -104,10 +116,11 @@ program.version(pjson.version)
   .arguments('repo')
   .option('-p, --preset [value]', 'Specify a label preset.')
   .option('-j, --json [value]', 'Specify your own JSON label preset.')
-  .option('-r, --remove [value]', 'Remove a GitHub label preset.')
+  .option('-r, --remove', 'Remove a GitHub label preset.')
   .parse(process.argv);
 
 var labelPreset = program.preset;
+var removePreset = program.remove;
 var jsonFile = program.json;
 
 // Show help if no arguments are provided.
@@ -133,8 +146,8 @@ else if (labelPreset) {
   var labels = presets[labelPreset];
   if (!labels) {
     logging.exit(format('preset "%s" doesn\'t exist.', labelPreset));
-  } else if (!labels.length) {
-    logging.exit('labels are empty.');
+  } else if (removePreset) {
+    sendClientRequest(repository, labels, removeLabels);
   } else {
     sendClientRequest(repository, labels, createLabels);
   }

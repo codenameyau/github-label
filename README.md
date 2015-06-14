@@ -32,7 +32,7 @@ for a list of available predefined label presets.
 github-label 'codenameyau/github-label'
 ```
 
-##### Create labels with the available presets
+##### Create labels with one of the available presets
 ```
 github-label 'codenameyau/github-label' -p priority
 ```
