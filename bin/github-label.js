@@ -41,10 +41,21 @@ var promptForCredentials = function(client, callback) {
   });
 };
 
-var postLabels = function(client, labels) {
+var exitOn404 = function(error) {
+  if (error && error.statusCode === 404) {
+    logging.exit('repository does not exist.');
+  }
+};
+
+var outputLabels = function(client) {
+
+};
+
+var createLabels = function(client, labels) {
   async.each(labels, function(item) {
     client.postLabel(item, function(error, data) {
-      if (error) {
+      exitOn404(error);
+      if (error && error.statusCode === 422) {
         console.log(OUTPUT.skipped, item.name);
       } else if (data) {
         console.log(OUTPUT.created, data.name);
@@ -53,20 +64,20 @@ var postLabels = function(client, labels) {
   });
 };
 
-var createGithubLabels = function(repository, labels) {
+var sendClientRequest = function(repository, labels, callback) {
   var client = new GithubClient();
   client.setRepository(repository);
 
   // Authenticate client with access token.
   if (client.ACCESS_TOKEN) {
     client.setupTokenClient();
-    postLabels(client, labels);
+    callback(client, labels);
   }
 
   // Authenticate client with credentials.
   else {
     promptForCredentials(client, function() {
-      postLabels(client, labels);
+      callback(client, labels);
     });
   }
 };
@@ -77,7 +88,7 @@ var createGithubLabels = function(repository, labels) {
 *********************************************************************/
 program.version(pjson.version)
   .arguments('repo')
-  .option('-p, --preset [value]', 'Specify a label preset.', 'default')
+  .option('-p, --preset [value]', 'Specify a label preset.')
   .option('-j, --json [value]', 'Specify your own JSON label preset.')
   .option('-c, --clear [value]', 'Clear all GitHub labels.')
   .parse(process.argv);
@@ -96,12 +107,12 @@ if (!repository) {
 // Read JSON file if specfied by user.
 if (program.json) {
   utils.readJSON(program.json, function(data) {
-    createGithubLabels(repository, data);
+    sendClientRequest(repository, data, createLabels);
   });
 }
 
 // Use one of the specified label preset.
-else {
+else if (program.preset) {
   var labelPreset = program.preset;
   var labels = presets[labelPreset];
   if (!labels) {
@@ -109,6 +120,11 @@ else {
   } else if (!labels.length) {
     logging.exit('labels are empty.');
   } else {
-    createGithubLabels(repository, labels);
+    sendClientRequest(repository, labels, createLabels);
   }
+}
+
+// Output existing repository labels.
+else {
+  sendClientRequest(repository, null, outputLabels);
 }

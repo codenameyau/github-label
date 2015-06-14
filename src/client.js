@@ -38,8 +38,8 @@ GithubClient.prototype.setupAuthClient = function(username, password) {
 
 GithubClient.prototype.getLabels = function(callback) {
   var ghrepo = this.client.repo(this.repository);
-  ghrepo.labels(function(blank, data, header) {
-    callback(data, header);
+  ghrepo.labels(function(error, data, header) {
+    callback(error, data, header);
   });
 };
 

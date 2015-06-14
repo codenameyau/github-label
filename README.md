@@ -1,5 +1,7 @@
 # github-label
+
 [![NPM version](http://img.shields.io/npm/v/github-label.svg)](https://www.npmjs.org/package/github-label)
+[![license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/codenameyau/github-label/blob/master/LICENSE)
 
 ## Installation and Setup
 ```
