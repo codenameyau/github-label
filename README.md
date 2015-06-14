@@ -24,31 +24,58 @@ export GITHUB_LABEL_TOKEN='REPLACE THIS WITH YOUR TOKEN'
 ```
 
 ## Usage Examples
-Here a few examples. The quotes are optional.
-See the [presets directory](https://github.com/codenameyau/github-label/tree/master/presets)
-for a list of available predefined label presets.
+
+```
+  Usage: github-label [options]
+
+  Options:
+
+    -h, --help            output usage information
+    -V, --version         output the version number
+    -p, --preset [value]  Specify a label preset.
+    -j, --json [value]    Specify your own JSON label preset.
+    -r, --remove          Remove a GitHub label preset.
+    -R, --remove-all      Removes all labels.
+```
+
+--
 
 ##### Output current labels
 ```
 github-label 'codenameyau/github-label'
 ```
 
+--
+
 ##### Create labels with one of the available presets
 ```
 github-label 'codenameyau/github-label' -p priority
 ```
+
+--
 
 ##### Remove label preset
 ```
 github-label 'codenameyau/github-label' -p priority -r
 ```
 
+--
+
 ##### Create labels by specifying your own custom JSON preset
 ```
 github-label 'codenameyau/github-label' -j 'path-to/preset.json'
 ```
 
+--
+
 ##### Remove custom label preset
 ```
 github-label 'codenameyau/github-label' -j 'path-to/preset.json' -r
+```
+
+--
+
+##### Remove all labels
+```
+github-label 'codenameyau/github-label' -R
 ```

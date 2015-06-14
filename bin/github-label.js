@@ -56,9 +56,15 @@ var exitOn404 = function(error) {
   }
 };
 
-var outputLabels = function(client) {
+var getLabels = function(client, callback) {
   client.getLabels(function(error, data) {
     exitOn404(error);
+    callback(data);
+  });
+};
+
+var outputLabels = function(client) {
+  getLabels(client, function(data) {
     data.forEach(function(element) {
       console.log('#%s - %s', element.color, element.name);
     });
@@ -90,6 +96,12 @@ var removeLabels = function(client, labels) {
   });
 };
 
+var removeAllLabels = function(client) {
+  getLabels(client, function(data) {
+    removeLabels(client, data);
+  });
+};
+
 var sendClientRequest = function(repository, labels, callback) {
   var client = new GithubClient();
   client.setRepository(repository);
@@ -117,10 +129,12 @@ program.version(pjson.version)
   .option('-p, --preset [value]', 'Specify a label preset.')
   .option('-j, --json [value]', 'Specify your own JSON label preset.')
   .option('-r, --remove', 'Remove a GitHub label preset.')
+  .option('-R, --remove-all', 'Removes all labels.')
   .parse(process.argv);
 
 var labelPreset = program.preset;
 var removePreset = program.remove;
+var removeAll = program.removeAll;
 var jsonFile = program.json;
 
 // Show help if no arguments are provided.
@@ -134,8 +148,13 @@ if (!repository) {
   logging.exit('please specify a repository like "user/repo"');
 }
 
+// Remove all labels.
+if (removeAll) {
+  sendClientRequest(repository, null, removeAllLabels);
+}
+
 // Read JSON file if specfied by user.
-if (jsonFile) {
+else if (jsonFile) {
   utils.readJSON(jsonFile, function(data) {
     if (removePreset) {
       sendClientRequest(repository, data, removeLabels);
