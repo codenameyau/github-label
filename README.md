@@ -3,6 +3,10 @@
 [![NPM version](http://img.shields.io/npm/v/github-label.svg)](https://www.npmjs.org/package/github-label)
 [![license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/codenameyau/github-label/blob/master/LICENSE)
 
+Node command-line tool used to create or remove GitHub labels.
+Predefined labels are available in the presets folder.
+You can also create and use your own labels with JSON.
+
 ## Installation and Setup
 ```
 npm install -g github-label
