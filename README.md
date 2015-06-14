@@ -4,7 +4,7 @@
 [![license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/codenameyau/github-label/blob/master/LICENSE)
 
 Node command-line tool used to create or remove GitHub labels.
-Predefined labels are available in the presets folder.
+Predefined labels are available in the [presets folder](https://github.com/codenameyau/github-label/tree/master/presets).
 You can also create and use your own labels with JSON.
 
 ## Installation and Setup

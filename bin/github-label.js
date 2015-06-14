@@ -27,6 +27,15 @@ var OUTPUT = {
   removed: '[-] Removed label: %s',
 };
 
+var hasInvalidOptions = function(program) {
+  return program.rawArgs.length < 3 || [
+      program.preset,
+      program.json
+    ].some(function(element) {
+      return element === true;
+    });
+};
+
 var promptForCredentials = function(client, callback) {
   console.log('Please enter your GitHub credentials.\n');
   var authPrompt = [
@@ -48,7 +57,10 @@ var exitOn404 = function(error) {
 };
 
 var outputLabels = function(client) {
-
+  client.getLabels(function(error, data) {
+    exitOn404(error);
+    console.log(data);
+  });
 };
 
 var createLabels = function(client, labels) {
@@ -90,11 +102,14 @@ program.version(pjson.version)
   .arguments('repo')
   .option('-p, --preset [value]', 'Specify a label preset.')
   .option('-j, --json [value]', 'Specify your own JSON label preset.')
-  .option('-c, --clear [value]', 'Clear all GitHub labels.')
+  .option('-r, --remove [value]', 'Remove a GitHub label preset.')
   .parse(process.argv);
 
-// Show help if no options are specified.
-if (program.rawArgs.length < 3) {
+var labelPreset = program.preset;
+var jsonFile = program.json;
+
+// Show help if no arguments are provided.
+if (hasInvalidOptions(program)) {
   program.help();
 }
 
@@ -105,15 +120,14 @@ if (!repository) {
 }
 
 // Read JSON file if specfied by user.
-if (program.json) {
-  utils.readJSON(program.json, function(data) {
+if (jsonFile) {
+  utils.readJSON(jsonFile, function(data) {
     sendClientRequest(repository, data, createLabels);
   });
 }
 
 // Use one of the specified label preset.
-else if (program.preset) {
-  var labelPreset = program.preset;
+else if (labelPreset) {
   var labels = presets[labelPreset];
   if (!labels) {
     logging.exit(format('preset "%s" doesn\'t exist.', labelPreset));
