@@ -21,6 +21,12 @@ var presets = requireDir('../presets');
 /********************************************************************
 * HELPER FUNCTIONS
 *********************************************************************/
+var OUTPUT = {
+  created: '[+] Created label: %s',
+  skipped: '[-] Skipped label: %s',
+  removed: '[-] Removed label: %s',
+};
+
 var promptForCredentials = function(client, callback) {
   console.log('Please enter your GitHub credentials.\n');
   var authPrompt = [
@@ -39,9 +45,9 @@ var postLabels = function(client, labels) {
   async.each(labels, function(item) {
     client.postLabel(item, function(error, data) {
       if (error) {
-        console.log('[-] Could not create label: %s', item.name);
+        console.log(OUTPUT.skipped, item.name);
       } else if (data) {
-        console.log('[+] Created label: %s (#%s)', data.name, data.color);
+        console.log(OUTPUT.created, data.name);
       }
     });
   });
