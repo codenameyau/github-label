@@ -137,7 +137,11 @@ if (!repository) {
 // Read JSON file if specfied by user.
 if (jsonFile) {
   utils.readJSON(jsonFile, function(data) {
-    sendClientRequest(repository, data, createLabels);
+    if (removePreset) {
+      sendClientRequest(repository, data, removeLabels);
+    } else {
+      sendClientRequest(repository, data, createLabels);
+    }
   });
 }
 
