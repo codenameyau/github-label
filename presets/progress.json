@@ -1,0 +1,34 @@
+[
+  {
+    "name": "progress: backlog",
+    "color": "EBEBEB"
+  },
+  {
+    "name": "progress: blocked",
+    "color": "FC4242"
+  },
+  {
+    "name": "progress: standby",
+    "color": "D0F2F0"
+  },
+  {
+    "name": "progress: release",
+    "color": "C5EBA0"
+  },
+  {
+    "name": "progress: design",
+    "color": "695ABB"
+  },
+  {
+    "name": "progress: development",
+    "color": "2D8EFA"
+  },
+  {
+    "name": "progress: testing",
+    "color": "F29141"
+  },
+  {
+    "name": "progress: review",
+    "color": "FFFCAB"
+  }
+]
