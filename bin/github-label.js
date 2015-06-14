@@ -59,7 +59,9 @@ var exitOn404 = function(error) {
 var outputLabels = function(client) {
   client.getLabels(function(error, data) {
     exitOn404(error);
-    console.log(data);
+    data.forEach(function(element) {
+      console.log('#%s - %s', element.color, element.name);
+    });
   });
 };
 
