@@ -1,0 +1,18 @@
+[
+  {
+    "name": "priority 1: urgent",
+    "color": "D62929"
+  },
+  {
+    "name": "priority 2: high",
+    "color": "FFA04D"
+  },
+  {
+    "name": "priority 3: medium",
+    "color": "F7F697"
+  },
+  {
+    "name": "priority 4: low",
+    "color": "9CE089"
+  }
+]

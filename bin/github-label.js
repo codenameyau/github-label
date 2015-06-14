@@ -31,8 +31,8 @@ var hasInvalidOptions = function(program) {
   return program.rawArgs.length < 3 || [
       program.preset,
       program.json
-    ].some(function(element) {
-      return element === true;
+    ].some(function(option) {
+      return option === true;
     });
 };
 

@@ -40,7 +40,7 @@ export GITHUB_LABEL_TOKEN='REPLACE THIS WITH YOUR TOKEN'
 
 --
 
-##### Output current labels
+##### Output repository labels
 ```
 github-label 'codenameyau/github-label'
 ```
