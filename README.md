@@ -47,6 +47,14 @@ github-label 'codenameyau/github-label'
 
 --
 
+##### List the available presets
+```
+github-label -l
+github-label -l default
+```
+
+--
+
 ##### Create labels with one of the available presets
 ```
 github-label 'codenameyau/github-label' -p priority
