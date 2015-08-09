@@ -12,7 +12,7 @@ var async = require('async');
 var requireDir = require('require-dir');
 var format = require('util').format;
 var GithubClient = require('../src/client');
-var logging = require('../src/logging');
+var system = require('../src/system');
 var utils = require('../src/utils');
 var pjson = require('../package.json');
 var presets = requireDir('../presets');
@@ -44,7 +44,7 @@ var promptForCredentials = function(client, callback) {
   prompt.start();
   prompt.get(authPrompt, function(error, result) {
     if (error) {
-      logging.exit('invalid login credentials.');
+      system.exit('invalid login credentials.');
     } client.setupAuthClient(result.username, result.password);
     callback();
   });
@@ -52,7 +52,21 @@ var promptForCredentials = function(client, callback) {
 
 var exitOn404 = function(error) {
   if (error && error.statusCode === 404) {
-    logging.exit('repository does not exist.');
+    system.exit('repository does not exist.');
+  }
+};
+
+var showPresets = function(name) {
+  if (name) {
+
+  } else {
+    // Only print the preset names.
+    console.log('List of available presets:\n');
+    for (var label in presets) {
+      if (presets.hasOwnProperty(label)) {
+        console.log(label);
+      }
+    }
   }
 };
 
@@ -127,12 +141,14 @@ var sendClientRequest = function(repository, labels, callback) {
 program.version(pjson.version)
   .arguments('repo')
   .option('-p, --preset [value]', 'Specify a label preset.')
+  .option('-l, --list [value]', 'List the default preset.')
   .option('-j, --json [value]', 'Specify your own JSON label preset.')
   .option('-r, --remove', 'Remove a GitHub label preset.')
   .option('-R, --remove-all', 'Removes all labels.')
   .parse(process.argv);
 
 var labelPreset = program.preset;
+var listPreset = program.list;
 var removePreset = program.remove;
 var removeAll = program.removeAll;
 var jsonFile = program.json;
@@ -142,10 +158,16 @@ if (hasInvalidOptions(program)) {
   program.help();
 }
 
+// List the default presets.
+if (listPreset) {
+  showPresets();
+  system.success();
+}
+
 // Validate that a repository is specified.
 var repository = program.args[0];
 if (!repository) {
-  logging.exit('please specify a repository like "user/repo"');
+  system.exit('please specify a repository like "user/repo"');
 }
 
 // Remove all labels.
@@ -168,7 +190,7 @@ else if (jsonFile) {
 else if (labelPreset) {
   var labels = presets[labelPreset];
   if (!labels) {
-    logging.exit(format('preset "%s" doesn\'t exist.', labelPreset));
+    system.exit(format('preset "%s" doesn\'t exist.', labelPreset));
   } else if (removePreset) {
     sendClientRequest(repository, labels, removeLabels);
   } else {
