@@ -56,10 +56,15 @@ var exitOn404 = function(error) {
   }
 };
 
-var showPresets = function(name) {
-  if (name) {
-
-  } else {
+var showPresets = function(presetName) {
+  if (typeof(presetName) === 'string') {
+    // Print the labels in the preset.
+    console.log('Preset: %s\n', presetName);
+    var labels = presets[presetName];
+    labels.forEach(function(value) {
+      console.log('#%s - %s', value.color, value.name);
+    });
+  } else if (presetName === true) {
     // Only print the preset names.
     console.log('List of available presets:\n');
     for (var label in presets) {
@@ -147,11 +152,11 @@ program.version(pjson.version)
   .option('-R, --remove-all', 'Removes all labels.')
   .parse(process.argv);
 
-var labelPreset = program.preset;
-var listPreset = program.list;
-var removePreset = program.remove;
-var removeAll = program.removeAll;
-var jsonFile = program.json;
+var labelOption = program.preset;
+var listOption = program.list;
+var removeOption = program.remove;
+var removeAllOption = program.removeAll;
+var jsonOption = program.json;
 
 // Show help if no arguments are provided.
 if (hasInvalidOptions(program)) {
@@ -159,8 +164,8 @@ if (hasInvalidOptions(program)) {
 }
 
 // List the default presets.
-if (listPreset) {
-  showPresets();
+if (listOption) {
+  showPresets(listOption);
   system.success();
 }
 
@@ -171,14 +176,14 @@ if (!repository) {
 }
 
 // Remove all labels.
-if (removeAll) {
+if (removeAllOption) {
   sendClientRequest(repository, null, removeAllLabels);
 }
 
 // Read JSON file if specfied by user.
-else if (jsonFile) {
-  utils.readJSON(jsonFile, function(data) {
-    if (removePreset) {
+else if (jsonOption) {
+  utils.readJSON(jsonOption, function(data) {
+    if (removeOption) {
       sendClientRequest(repository, data, removeLabels);
     } else {
       sendClientRequest(repository, data, createLabels);
@@ -187,11 +192,11 @@ else if (jsonFile) {
 }
 
 // Use one of the specified label preset.
-else if (labelPreset) {
-  var labels = presets[labelPreset];
+else if (labelOption) {
+  var labels = presets[labelOption];
   if (!labels) {
-    system.exit(format('preset "%s" doesn\'t exist.', labelPreset));
-  } else if (removePreset) {
+    system.exit(format('preset "%s" doesn\'t exist.', labelOption));
+  } else if (removeOption) {
     sendClientRequest(repository, labels, removeLabels);
   } else {
     sendClientRequest(repository, labels, createLabels);
