@@ -40,50 +40,27 @@ export GITHUB_LABEL_TOKEN='REPLACE THIS WITH YOUR TOKEN'
 
 --
 
-##### Output repository labels
-```
+### Terminal
+```bash
+# Output the labels for the repository.
 github-label 'codenameyau/github-label'
-```
 
---
-
-##### List the available presets
-```
+# List the available label presets.
 github-label -l
-github-label -l default
-```
 
---
+# List the labels for a given preset.
+github-label -l priority
 
-##### Create labels with one of the available presets
-```
+# Create labels with one of the available presets.
 github-label 'codenameyau/github-label' -p priority
-```
 
---
-
-##### Remove label preset
-```
-github-label 'codenameyau/github-label' -p priority -r
-```
-
---
-
-##### Create labels by specifying your own custom JSON preset
-```
+# Create labels by specifying your own JSON.
 github-label 'codenameyau/github-label' -j 'path-to/preset.json'
-```
 
---
-
-##### Remove custom label preset
-```
+# Delete all labels from a given preset or json file.
+github-label 'codenameyau/github-label' -p priority -r
 github-label 'codenameyau/github-label' -j 'path-to/preset.json' -r
-```
 
---
-
-##### Remove all labels
-```
+# Remove all labels.
 github-label 'codenameyau/github-label' -R
 ```
