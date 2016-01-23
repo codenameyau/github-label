@@ -22,9 +22,10 @@ var presets = requireDir('../presets');
 * HELPER FUNCTIONS
 *********************************************************************/
 var OUTPUT = {
-  created: '[+] Created label: %s',
-  skipped: '[-] Skipped label: %s',
-  removed: '[x] Removed label: %s',
+  created: '[+] Created label: "%s"',
+  updated: '[+] Updated label: "%s"',
+  skipped: '[-] Skipped label: "%s"',
+  removed: '[x] Removed label: "%s"',
 };
 
 var hasInvalidOptions = function(program) {
@@ -90,12 +91,13 @@ var outputLabels = function(client) {
   });
 };
 
-var createLabels = function(client, labels) {
-  async.each(labels, function(item) {
-    client.postLabel(item, function(error, data) {
+var createLabels = function(client, program) {
+  async.each(program.labels, function(label) {
+    client.createLabel(label, function(error, data) {
       exitOn404(error);
+      // Status code 422 indicates that the label already exists.
       if (error && error.statusCode === 422) {
-        console.log(OUTPUT.skipped, item.name);
+        console.log(OUTPUT.skipped, label.name);
       } else if (data) {
         console.log(OUTPUT.created, data.name);
       }
@@ -103,13 +105,47 @@ var createLabels = function(client, labels) {
   });
 };
 
-var removeLabels = function(client, labels) {
-  async.each(labels, function(item) {
-    client.removeLabel(item.name, function(error) {
+var createOrUpdateLabels = function(client, program) {
+  async.each(program.labels, function(label) {
+    client.getLabel(label, function(error, data) {
+
+      // Create the label if it does not exist.
       if (error && error.statusCode === 404) {
-        console.log(OUTPUT.skipped, item.name);
+        client.createLabel(label, function(error, data) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log(OUTPUT.created, label.name);
+          }
+        });
+      }
+
+      // Update the label color if different.
+      else if (data.color !== label.color) {
+        client.updateLabel(label, function(error, data) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log(OUTPUT.updated, label.name);
+          }
+        })
+      }
+
+      // Otherwise skip the label.
+      else {
+        console.log(OUTPUT.skipped, label.name);
+      }
+    });
+  });
+};
+
+var removeLabels = function(client, program) {
+  async.each(program.labels, function(label) {
+    client.removeLabel(label, function(error) {
+      if (error && error.statusCode === 404) {
+        console.log(OUTPUT.skipped, label.name);
       } else {
-        console.log(OUTPUT.removed, item.name);
+        console.log(OUTPUT.removed, label.name);
       }
     });
   });
@@ -121,20 +157,20 @@ var removeAllLabels = function(client) {
   });
 };
 
-var sendClientRequest = function(repository, labels, callback) {
+var sendClientRequest = function(repository, program, callback) {
   var client = new GithubClient();
   client.setRepository(repository);
 
   // Authenticate client with access token.
   if (client.ACCESS_TOKEN) {
     client.setupTokenClient();
-    callback(client, labels);
+    callback(client, program);
   }
 
   // Authenticate client with credentials.
   else {
     promptForCredentials(client, function() {
-      callback(client, labels);
+      callback(client, program);
     });
   }
 };
@@ -148,15 +184,10 @@ program.version(pjson.version)
   .option('-p, --preset [value]', 'Specify a label preset.')
   .option('-l, --list [value]', 'List the default preset.')
   .option('-j, --json [value]', 'Specify your own JSON label preset.')
+  .option('-s, --skip', 'Skip existing labels instead of updating them.')
   .option('-r, --remove', 'Remove a GitHub label preset.')
   .option('-R, --remove-all', 'Removes all labels.')
   .parse(process.argv);
-
-var labelOption = program.preset;
-var listOption = program.list;
-var removeOption = program.remove;
-var removeAllOption = program.removeAll;
-var jsonOption = program.json;
 
 // Show help if no arguments are provided.
 if (hasInvalidOptions(program)) {
@@ -164,8 +195,8 @@ if (hasInvalidOptions(program)) {
 }
 
 // List the default presets.
-if (listOption) {
-  showPresets(listOption);
+if (program.list) {
+  showPresets(program.list);
   system.success();
 }
 
@@ -176,34 +207,41 @@ if (!repository) {
 }
 
 // Remove all labels.
-if (removeAllOption) {
-  sendClientRequest(repository, null, removeAllLabels);
+if (program.removeAll) {
+  sendClientRequest(repository, program, removeAllLabels);
 }
 
 // Read JSON file if specfied by user.
-else if (jsonOption) {
-  utils.readJSON(jsonOption, function(data) {
-    if (removeOption) {
-      sendClientRequest(repository, data, removeLabels);
+else if (program.json) {
+  utils.readJSON(program.json, function(data) {
+    program.labels = data;
+    if (program.remove) {
+      sendClientRequest(repository, program, removeLabels);
+    } else if (program.skip) {
+      sendClientRequest(repository, program, createLabels);
     } else {
-      sendClientRequest(repository, data, createLabels);
+      sendClientRequest(repository, program, createOrUpdateLabels);
     }
   });
 }
 
 // Use one of the specified label preset.
-else if (labelOption) {
-  var labels = presets[labelOption];
+else if (program.preset) {
+  var labels = presets[program.preset];
+  program.labels = labels;
   if (!labels) {
-    system.exit(format('preset "%s" doesn\'t exist.', labelOption));
-  } else if (removeOption) {
-    sendClientRequest(repository, labels, removeLabels);
+    system.exit(format('preset "%s" doesn\'t exist.', program.preset));
+  }
+  if (program.remove) {
+    sendClientRequest(repository, program, removeLabels);
+  } else if (program.skip) {
+    sendClientRequest(repository, program, createLabels);
   } else {
-    sendClientRequest(repository, labels, createLabels);
+    sendClientRequest(repository, program, createOrUpdateLabels);
   }
 }
 
 // Output existing repository labels.
 else {
-  sendClientRequest(repository, null, outputLabels);
+  sendClientRequest(repository, program, outputLabels);
 }

@@ -43,15 +43,29 @@ GithubClient.prototype.getLabels = function(callback) {
   });
 };
 
-GithubClient.prototype.postLabel = function(label, callback) {
+GithubClient.prototype.getLabel = function(label, callback) {
+  var ghlabel = this.client.label(this.repository, label.name);
+  ghlabel.info(function(error, data, header) {
+    callback(error, data, header);
+  })
+};
+
+GithubClient.prototype.createLabel = function(label, callback) {
   var ghrepo = this.client.repo(this.repository);
   ghrepo.label(label, function(error, data, header) {
     callback(error, data, header);
   });
 };
 
-GithubClient.prototype.removeLabel = function(labelName, callback) {
-  var ghlabel = this.client.label(this.repository, labelName);
+GithubClient.prototype.updateLabel = function(label, callback) {
+  var ghlabel = this.client.label(this.repository, label.name);
+  ghlabel.update({color: label.color}, function(error, data, header) {
+    callback(error, data, header);
+  })
+};
+
+GithubClient.prototype.removeLabel = function(label, callback) {
+  var ghlabel = this.client.label(this.repository, label.name);
   ghlabel.delete(function(error, data, header) {
     callback(error, data, header);
   });

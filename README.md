@@ -33,7 +33,9 @@ export GITHUB_LABEL_TOKEN='REPLACE THIS WITH YOUR TOKEN'
     -h, --help            output usage information
     -V, --version         output the version number
     -p, --preset [value]  Specify a label preset.
+    -l, --list [value]    List the default preset.
     -j, --json [value]    Specify your own JSON label preset.
+    -s, --skip            Skip existing labels instead of updating them.
     -r, --remove          Remove a GitHub label preset.
     -R, --remove-all      Removes all labels.
 ```
