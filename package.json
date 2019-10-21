@@ -6,9 +6,8 @@
     "github-label": "bin/github-label.js"
   },
   "main": "src/client.js",
-  "preferGlobal": "true",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run test"
   },
   "repository": {
     "type": "git",
@@ -27,10 +26,10 @@
   },
   "homepage": "https://github.com/codenameyau/github-label",
   "dependencies": {
-    "async": "^1.2.1",
-    "commander": "^2.8.1",
-    "octonode": "^0.6.17",
-    "prompt": "^0.2.14",
-    "require-dir": "^0.3.0"
+    "async": "3.1.0",
+    "commander": "3.0.2",
+    "octonode": "0.9.5",
+    "prompt": "1.0.0",
+    "require-dir": "0.3.0"
   }
 }

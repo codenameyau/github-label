@@ -3,9 +3,9 @@
 [![NPM version](http://img.shields.io/npm/v/github-label.svg)](https://www.npmjs.org/package/github-label)
 [![license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/codenameyau/github-label/blob/master/LICENSE)
 
-Node command-line tool used to create or remove GitHub labels.
-Predefined labels are available in the [presets folder](https://github.com/codenameyau/github-label/tree/master/presets).
-You can also create and use your own labels with JSON.
+Node CLI to clone, create or remove GitHub labels.
+
+Predefined label examples are available in the [examples folder](https://github.com/codenameyau/github-label/tree/master/examples).
 
 ## Installation and Setup
 ```
@@ -26,21 +26,17 @@ export GITHUB_LABEL_TOKEN='REPLACE THIS WITH YOUR TOKEN'
 ## Usage Examples
 
 ```
-  Usage: github-label [options]
+Usage: github-label [options]
 
-  Options:
+Options:
 
-    -h, --help            output usage information
-    -V, --version         output the version number
-    -p, --preset [value]  Specify a label preset.
-    -l, --list [value]    List the default preset.
-    -j, --json [value]    Specify your own JSON label preset.
-    -s, --skip            Skip existing labels instead of updating them.
-    -r, --remove          Remove a GitHub label preset.
-    -R, --remove-all      Removes all labels.
+  -h, --help            output usage information
+  -V, --version         output the version number
+  -j, --json [value]    Specify your own JSON label preset.
+  -s, --skip            Skip existing labels instead of updating them.
+  -r, --remove          Remove a GitHub label preset.
+  -R, --remove-all      Removes all labels.
 ```
-
---
 
 ### Terminal
 ```bash

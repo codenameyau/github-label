@@ -4,18 +4,14 @@
  * MIT License (c) 2015
  * https://github.com/codenameyau/github-label
  */
-'use strict';
-
 var program = require('commander');
 var prompt = require('prompt');
 var async = require('async');
-var requireDir = require('require-dir');
 var format = require('util').format;
 var GithubClient = require('../src/client');
 var system = require('../src/system');
 var utils = require('../src/utils');
 var pjson = require('../package.json');
-var presets = requireDir('../presets');
 
 
 /********************************************************************
@@ -54,25 +50,6 @@ var promptForCredentials = function(client, callback) {
 var exitOn404 = function(error) {
   if (error && error.statusCode === 404) {
     system.exit('repository does not exist.');
-  }
-};
-
-var showPresets = function(presetName) {
-  if (typeof(presetName) === 'string') {
-    // Print the labels in the preset.
-    console.log('Preset: %s\n', presetName);
-    var labels = presets[presetName];
-    labels.forEach(function(value) {
-      console.log('#%s - %s', value.color, value.name);
-    });
-  } else if (presetName === true) {
-    // Only print the preset names.
-    console.log('List of available presets:\n');
-    for (var label in presets) {
-      if (presets.hasOwnProperty(label)) {
-        console.log(label);
-      }
-    }
   }
 };
 
@@ -182,7 +159,6 @@ var sendClientRequest = function(repository, program, callback) {
 program.version(pjson.version)
   .arguments('repo')
   .option('-p, --preset [value]', 'Specify a label preset.')
-  .option('-l, --list [value]', 'List the default preset.')
   .option('-j, --json [value]', 'Specify your own JSON label preset.')
   .option('-s, --skip', 'Skip existing labels instead of updating them.')
   .option('-r, --remove', 'Remove a GitHub label preset.')
@@ -192,12 +168,6 @@ program.version(pjson.version)
 // Show help if no arguments are provided.
 if (hasInvalidOptions(program)) {
   program.help();
-}
-
-// List the default presets.
-if (program.list) {
-  showPresets(program.list);
-  system.success();
 }
 
 // Validate that a repository is specified.
@@ -223,22 +193,6 @@ else if (program.json) {
       sendClientRequest(repository, program, createOrUpdateLabels);
     }
   });
-}
-
-// Use one of the specified label preset.
-else if (program.preset) {
-  var labels = presets[program.preset];
-  program.labels = labels;
-  if (!labels) {
-    system.exit(format('preset "%s" doesn\'t exist.', program.preset));
-  }
-  if (program.remove) {
-    sendClientRequest(repository, program, removeLabels);
-  } else if (program.skip) {
-    sendClientRequest(repository, program, createLabels);
-  } else {
-    sendClientRequest(repository, program, createOrUpdateLabels);
-  }
 }
 
 // Output existing repository labels.

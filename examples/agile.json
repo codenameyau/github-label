@@ -1,0 +1,26 @@
+[
+  {
+    "name": "backlog",
+    "color": "EBEBEB"
+  },
+  {
+    "name": "blocked",
+    "color": "FC4242"
+  },
+  {
+    "name": "needs designs",
+    "color": "695ABB"
+  },
+  {
+    "name": "in development",
+    "color": "2D8EFA"
+  },
+  {
+    "name": "under review",
+    "color": "FFFCAB"
+  },
+  {
+    "name": "released",
+    "color": "C5EBA0"
+  }
+]
