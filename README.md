@@ -3,7 +3,7 @@
 [![NPM version](http://img.shields.io/npm/v/github-label.svg)](https://www.npmjs.org/package/github-label)
 [![license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/codenameyau/github-label/blob/master/LICENSE)
 
-Node CLI to clone, create or remove GitHub labels.
+Node CLI to clone, create or remove GitHub labels. Add screenshot with confirmation prompt.
 
 Predefined label examples are available in the [examples folder](https://github.com/codenameyau/github-label/tree/master/examples).
 
@@ -57,7 +57,7 @@ gh-label 'https://github.com/codenameyau/github-label'
 gh-label 'codenameyau/github-label' --create-from 'path-to/labels.json'
 
 # Delete all labels from a given json file.
-gh-label 'codenameyau/github-label' --remove-from 'path-to/preset.json'
+gh-label 'codenameyau/github-label' --remove-from 'path-to/labels.json'
 
 # Remove all labels.
 gh-label 'codenameyau/github-label' --remove-all

@@ -155,10 +155,14 @@ var sendClientRequest = function(repository, program, callback) {
 program
   .version(pjson.version)
   .arguments("repo")
-  .option("-j, --json <json-file>", "Specify your JSON file.")
-  .option("-s, --skip", "Skip existing labels instead of updating them.")
-  .option("-r, --remove <json-file>", "Remove a GitHub label from a JSON file.")
+  .option("-c, --clone <repo>", "Specify repository to clone from.")
+  .option("-j, --create-from <json-file>", "Specify your JSON file.")
+  .option(
+    "-r, --remove-from <json-file>",
+    "Remove a GitHub label from a JSON file."
+  )
   .option("-R, --remove-all", "Removes all labels.")
+  .option("-s, --skip", "Skip existing labels instead of updating them.")
   .parse(process.argv);
 
 // Show help if no arguments are provided.
