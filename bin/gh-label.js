@@ -4,52 +4,50 @@
  * MIT License (c) 2015
  * https://github.com/codenameyau/github-label
  */
-var program = require('commander');
-var prompt = require('prompt');
-var async = require('async');
-var format = require('util').format;
-var GithubClient = require('../src/client');
-var system = require('../src/system');
-var utils = require('../src/utils');
-var pjson = require('../package.json');
-
+var program = require("commander");
+var prompt = require("prompt");
+var async = require("async");
+var format = require("util").format;
+var GithubClient = require("../src/client");
+var system = require("../src/system");
+var utils = require("../src/utils");
+var pjson = require("../package.json");
 
 /********************************************************************
-* HELPER FUNCTIONS
-*********************************************************************/
+ * HELPER FUNCTIONS
+ *********************************************************************/
 var OUTPUT = {
   created: '[+] Created label: "%s"',
   updated: '[+] Updated label: "%s"',
   skipped: '[-] Skipped label: "%s"',
-  removed: '[x] Removed label: "%s"',
+  removed: '[x] Removed label: "%s"'
 };
 
 var hasInvalidOptions = function(program) {
-  return program.rawArgs.length < 3 || [
-      program.preset,
-      program.json
-    ].some(function(option) {
-      return option === true;
-    });
+  return program.rawArgs.length < 3;
 };
 
 var promptForCredentials = function(client, callback) {
-  console.log('Please enter your GitHub credentials.\n');
+  console.log("Please enter your GitHub credentials.\n");
+
   var authPrompt = [
-    { name: 'username', type: 'string', required: true },
-    { name: 'password', type: 'string', required: true, hidden: true }];
+    { name: "username", type: "string", required: true },
+    { name: "password", type: "string", required: true, hidden: true }
+  ];
+
   prompt.start();
   prompt.get(authPrompt, function(error, result) {
     if (error) {
-      system.exit('invalid login credentials.');
-    } client.setupAuthClient(result.username, result.password);
+      system.exit("invalid GitHub login credentials.");
+    }
+    client.setupAuthClient(result.username, result.password);
     callback();
   });
 };
 
 var exitOn404 = function(error) {
   if (error && error.statusCode === 404) {
-    system.exit('repository does not exist.');
+    system.exit("repository does not exist.");
   }
 };
 
@@ -63,7 +61,7 @@ var getLabels = function(client, callback) {
 var outputLabels = function(client) {
   getLabels(client, function(data) {
     data.forEach(function(element) {
-      console.log('#%s - %s', element.color, element.name);
+      console.log("#%s - %s", element.color, element.name);
     });
   });
 };
@@ -85,7 +83,6 @@ var createLabels = function(client, program) {
 var createOrUpdateLabels = function(client, program) {
   async.each(program.labels, function(label) {
     client.getLabel(label, function(error, data) {
-
       // Create the label if it does not exist.
       if (error && error.statusCode === 404) {
         client.createLabel(label, function(error, data) {
@@ -105,7 +102,7 @@ var createOrUpdateLabels = function(client, program) {
           } else {
             console.log(OUTPUT.updated, label.name);
           }
-        })
+        });
       }
 
       // Otherwise skip the label.
@@ -152,21 +149,28 @@ var sendClientRequest = function(repository, program, callback) {
   }
 };
 
-
 /********************************************************************
-* MAIN CLI PROGRAM
-*********************************************************************/
-program.version(pjson.version)
-  .arguments('repo')
-  .option('-p, --preset [value]', 'Specify a label preset.')
-  .option('-j, --json [value]', 'Specify your own JSON label preset.')
-  .option('-s, --skip', 'Skip existing labels instead of updating them.')
-  .option('-r, --remove', 'Remove a GitHub label preset.')
-  .option('-R, --remove-all', 'Removes all labels.')
+ * MAIN CLI PROGRAM
+ *********************************************************************/
+program
+  .version(pjson.version)
+  .arguments("repo")
+  .option("-j, --json <json-file>", "Specify your JSON file.")
+  .option("-s, --skip", "Skip existing labels instead of updating them.")
+  .option("-r, --remove <json-file>", "Remove a GitHub label from a JSON file.")
+  .option("-R, --remove-all", "Removes all labels.")
   .parse(process.argv);
 
 // Show help if no arguments are provided.
 if (hasInvalidOptions(program)) {
+  console.log(
+    "Common usage:\ngh-label --clone https://github.com/facebook/react --to https://github.com/codenameyau/github-label"
+  );
+
+  console.log(
+    "See examples JSON files at:\nhttps://github.com/codenameyau/github-label/tree/master/examples\n"
+  );
+
   program.help();
 }
 

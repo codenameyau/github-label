@@ -3,7 +3,7 @@
   "version": "1.2.1",
   "description": "CLI for creating GitHub labels",
   "bin": {
-    "github-label": "bin/github-label.js"
+    "gh-label": "bin/gh-label.js"
   },
   "main": "src/client.js",
   "scripts": {

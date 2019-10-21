@@ -25,8 +25,15 @@ export GITHUB_LABEL_TOKEN='REPLACE THIS WITH YOUR TOKEN'
 
 ## Usage Examples
 
+Clone and replace all labels from one repository to another.
+
+```sh
+gh-label --clone https://github.com/facebook/react --to https://github.com/codenameyau/github-label
 ```
-Usage: github-label [options]
+
+Other usage.
+```
+Usage: gh-label [options]
 
 Options:
 
@@ -38,27 +45,20 @@ Options:
   -R, --remove-all      Removes all labels.
 ```
 
-### Terminal
+## Other Usages
+When specifying the GitHub repository, you can either use the shorthand or full url.
+
 ```bash
-# Output the labels for the repository.
-github-label 'codenameyau/github-label'
-
-# List the available label presets.
-github-label -l
-
-# List the labels for a given preset.
-github-label -l priority
-
-# Create labels with one of the available presets.
-github-label 'codenameyau/github-label' -p priority
+# Output the labels for the repository. Both are the same.
+gh-label 'codenameyau/github-label'
+gh-label 'https://github.com/codenameyau/github-label'
 
 # Create labels by specifying your own JSON.
-github-label 'codenameyau/github-label' -j 'path-to/preset.json'
+gh-label 'codenameyau/github-label' --create-from 'path-to/labels.json'
 
-# Delete all labels from a given preset or json file.
-github-label 'codenameyau/github-label' -p priority -r
-github-label 'codenameyau/github-label' -j 'path-to/preset.json' -r
+# Delete all labels from a given json file.
+gh-label 'codenameyau/github-label' --remove-from 'path-to/preset.json'
 
 # Remove all labels.
-github-label 'codenameyau/github-label' -R
+gh-label 'codenameyau/github-label' --remove-all
 ```
